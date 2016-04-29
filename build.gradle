@@ -1,0 +1,53 @@
+plugins {
+  id 'org.ajoberstar.grgit' version '1.4.2'
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+import org.ajoberstar.grgit.*
+import org.apache.tools.ant.filters.ReplaceTokens
+
+version = generateVersion('0.1')
+String pluginMain = 'com.lesserhydra.nemesis.NemesisPlugin'
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+  maven {
+    url "https://hub.spigotmc.org/nexus/content/repositories/snapshots/"
+  }
+}
+
+dependencies {
+  //Bukkit api
+  compile 'org.bukkit:bukkit:1.9-R0.1-SNAPSHOT'
+
+  testCompile 'junit:junit:4.12'
+  testCompile 'org.assertj:assertj-core:3.4.+'
+}
+
+task generatePluginYaml(type: Copy) {
+  from 'templates/plugin.yml'
+  into 'src/main/resources/'
+  filter(ReplaceTokens, tokens: [
+		version:		version,
+    mainClass:  pluginMain,
+  ])
+}
+
+task removePluginYaml(type: Delete) {
+	delete 'src/main/resources/plugin.yml'
+}
+
+generatePluginYaml.dependsOn('removePluginYaml')
+processResources.dependsOn('generatePluginYaml')
+clean.dependsOn('removePluginYaml')
+
+String generateVersion(workingVersion) {
+  Grgit repo = Grgit.open(project.file('.'))
+  Tag currentTag = repo.tag.list().find {it.commit == repo.head()}
+
+  if (currentTag == null) return workingVersion + '-' + repo.head().abbreviatedId
+  return currentTag.getName()
+}

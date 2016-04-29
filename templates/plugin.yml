@@ -1,0 +1,4 @@
+name: Nemesis
+main: @mainClass@
+version: @version@
+author: Roboboy
