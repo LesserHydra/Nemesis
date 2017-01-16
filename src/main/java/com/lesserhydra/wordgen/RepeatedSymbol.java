@@ -17,7 +17,19 @@ public class RepeatedSymbol implements Symbol {
 				.limit(n)
 				.collect(Collectors.joining());
 	}
-
+	
+	@Override
+	public int match(String string) {
+		//TODO: Non-trivial
+		return -1;
+		/*int stringIndex = 0;
+		for (int i = 0; i < n; ++i) {
+			int matchIndex = symbol.match(string.substring(stringIndex));
+			stringIndex += matchIndex;
+		}
+		return stringIndex;*/
+	}
+	
 	@Override
 	public double numRepresented() {
 		return Math.pow(symbol.numRepresented(), n);

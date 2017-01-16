@@ -15,7 +15,13 @@ public class OptionalSymbol implements Symbol {
 	public String evaluate() {
 		return (rand.nextDouble() * numRepresented() < 1 ? "" : symbol.evaluate());
 	}
-
+	
+	@Override
+	public int match(String string) {
+		int symbolMatch = symbol.match(string);
+		return symbolMatch < 0 ? 0 : symbolMatch;
+	}
+	
 	@Override
 	public double numRepresented() {
 		return 1 + symbol.numRepresented();

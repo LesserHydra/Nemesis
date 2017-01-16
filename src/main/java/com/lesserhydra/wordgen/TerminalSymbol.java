@@ -22,6 +22,11 @@ public class TerminalSymbol implements Symbol {
 	}
 	
 	@Override
+	public int match(String string) {
+		return string.startsWith(str) ? str.length() : -1;
+	}
+	
+	@Override
 	public double numRepresented() {
 		return 1;
 	}

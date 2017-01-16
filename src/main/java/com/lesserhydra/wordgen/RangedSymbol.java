@@ -21,7 +21,13 @@ public class RangedSymbol implements Symbol {
 				.limit(bag.next())
 				.collect(Collectors.joining());
 	}
-
+	
+	@Override
+	public int match(String string) {
+		//TODO: See RepeatedSymbol
+		return -1;
+	}
+	
 	@Override
 	public double numRepresented() {
 		double a = symbol.numRepresented();

@@ -47,7 +47,7 @@ public class GrammarBuilder {
 	
 	private String rootRule;
 	private final Deque<Pair<String, String>> ruleStrings = new LinkedList<>();
-	private final Map<String, Rule> ruleMap = new HashMap<>();
+	private final Map<String, Symbol> ruleMap = new HashMap<>();
 	
 	private void parseRuleLine(Pair<String, String> pair) {
 		String symbolString = pair.getLeft();
@@ -57,16 +57,16 @@ public class GrammarBuilder {
 	}
 
 	
-	private Rule buildRule(String ruleString) {
-		Collection<List<Symbol>> choices = new LinkedList<>();
-		parseString(ruleString, '|', s -> choices.add(buildSymbols(s)));
-		return new Rule(choices);
+	private ChoiceSymbol buildRule(String ruleString) {
+		Collection<Symbol> choices = new LinkedList<>();
+		parseString(ruleString, '|', s -> choices.add(buildListSymbol(s)));
+		return new ChoiceSymbol(choices);
 	}
 	
-	private List<Symbol> buildSymbols(String string) {
-		List<Symbol> result = new LinkedList<>();
-		parseString(string, ' ', str -> result.add(mapSymbol(str)));
-		return result;
+	private ListSymbol buildListSymbol(String string) {
+		List<Symbol> resultSymbols = new LinkedList<>();
+		parseString(string, ' ', str -> resultSymbols.add(mapSymbol(str)));
+		return new ListSymbol(resultSymbols);
 	}
 	
 	private Symbol mapSymbol(String symbolString) {
@@ -147,8 +147,7 @@ public class GrammarBuilder {
 	}
 	
 	private Symbol getSymbol(String symbolString) {
-		Rule rule = ruleMap.get(symbolString);
-		return rule != null ? rule : new TerminalSymbol(symbolString);
+		return ruleMap.getOrDefault(symbolString, new TerminalSymbol(symbolString));
 	}
 	
 	private static void parseString(String string, char seperator, Consumer<String> consumer) {

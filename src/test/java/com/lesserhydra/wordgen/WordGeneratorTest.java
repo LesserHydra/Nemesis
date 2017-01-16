@@ -1,12 +1,8 @@
 package com.lesserhydra.wordgen;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.WordUtils;
 import org.junit.Test;
 
-import java.util.stream.Stream;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class WordGeneratorTest {
 	
@@ -64,6 +60,9 @@ public class WordGeneratorTest {
 				.build();
 		//1 + 1
 		assertEquals(2, (long) generator.numPossible());
+		
+		assertTrue(generator.isPossible("A"));
+		assertTrue(generator.isPossible("AA"));
 	}
 	
 	@Test public void rulesWithinRules() {
@@ -71,10 +70,15 @@ public class WordGeneratorTest {
 				.rule("First", "A B | C")
 				.rule("A", "1|2|3|4")
 				.rule("B", "1|2|3|4|5|C")
-				.rule("C", "1|2|3")
+				.rule("C", "6|7|8")
 				.build();
 		//4 * 9 + 3
 		assertEquals(35, (long) generator.numPossible());
+		
+		assertTrue(generator.isPossible("47"));
+		assertTrue(generator.isPossible("8"));
+		
+		assertFalse(generator.isPossible("1"));
 	}
 	
 	@Test public void optionalSymbols() {
@@ -82,10 +86,17 @@ public class WordGeneratorTest {
 				.rule("First", "A A? B | C")
 				.rule("A", "1|2|3|4")
 				.rule("B", "1|2|3|4|5")
-				.rule("C", "1|2?|3")
+				.rule("C", "6|7?|8")
 				.build();
 		//4 * (4+1) * 5 + 4
 		assertEquals(104, (long) generator.numPossible());
+		
+		assertTrue(generator.isPossible(""));
+		assertTrue(generator.isPossible("7"));
+		//FIXME: Current strategy is greedy possessive, which is no good
+		//below: 'A' matches '1', 'A?' matches '1', 'B' doesn't match ''!
+		assertTrue(generator.isPossible("11"));
+		assertTrue(generator.isPossible("111"));
 	}
 	
 	/*@Test public void repeatedSymbols() {
@@ -115,10 +126,16 @@ public class WordGeneratorTest {
 				.rule("First", "A B\\? | C")
 				.rule("A", "1|2|3|4")
 				.rule("B", "1|2|3|4|5")
-				.rule("C", "1|2|3\\{")
+				.rule("C", "6|7|8\\{")
 				.build();
 		//4 * 1 + 3
 		assertEquals(7, (long) generator.numPossible());
+		
+		assertTrue(generator.isPossible("1B?"));
+		assertTrue(generator.isPossible("8{"));
+		
+		assertFalse(generator.isPossible("1"));
+		assertFalse(generator.isPossible("11"));
 	}
 	
 	@Test public void doubleEscapes() {
@@ -126,10 +143,15 @@ public class WordGeneratorTest {
 				.rule("First", "A B\\\\? | C")
 				.rule("A", "1|2|3|4")
 				.rule("B", "1|2|3|4|5")
-				.rule("C", "1|2|3\\{")
+				.rule("C", "6|7|8\\{")
 				.build();
 		//4 * 2 + 3
 		assertEquals(11, (long) generator.numPossible());
+		
+		assertTrue(generator.isPossible("1B\\"));
+		assertTrue(generator.isPossible("1"));
+		
+		assertFalse(generator.isPossible("11"));
 	}
 	
 	@Test public void groupings() {
@@ -137,10 +159,18 @@ public class WordGeneratorTest {
 				.rule("First", "A (B | C \\| C)? | C")
 				.rule("A", "1|2|3|4")
 				.rule("B", "1|2|3|4|5")
-				.rule("C", "1|2|3")
+				.rule("C", "6|7|8")
 				.build();
 		//4 * (5 + [3 * 1 * 3] + 1) + 3
 		assertEquals(63, (long) generator.numPossible());
+		
+		assertTrue(generator.isPossible("1"));
+		assertTrue(generator.isPossible("15"));
+		assertTrue(generator.isPossible("18|8"));
+		assertTrue(generator.isPossible("8"));
+		
+		assertFalse(generator.isPossible("5"));
+		assertFalse(generator.isPossible("18"));
 	}
 	
 }
