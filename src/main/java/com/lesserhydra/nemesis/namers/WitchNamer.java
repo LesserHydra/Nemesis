@@ -1,9 +1,10 @@
-package com.lesserhydra.nemesis;
+package com.lesserhydra.nemesis.namers;
 
-import org.bukkit.entity.LivingEntity;
 import com.lesserhydra.wordgen.NameGenerator;
+import org.apache.commons.lang.StringUtils;
+import org.bukkit.entity.LivingEntity;
 
-public class WitchNamer implements MonsterNamer {
+class WitchNamer implements MonsterNamer {
 	
 	//26144 possibilities
 	private static final NameGenerator nameGenerator = NameGenerator.builder()
@@ -26,14 +27,8 @@ public class WitchNamer implements MonsterNamer {
 			.build();
 	
 	@Override
-	public String generateName() {
-		return nameGenerator.next();
-	}
-
-	@Override
-	public String generateTitle(LivingEntity entity) {
-		// TODO Auto-generated method stub
-		return null;
+	public String generateName(LivingEntity entity) {
+		return StringUtils.capitalize(nameGenerator.next());
 	}
 	
 }

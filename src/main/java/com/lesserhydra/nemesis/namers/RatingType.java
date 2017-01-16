@@ -1,4 +1,4 @@
-package com.lesserhydra.nemesis;
+package com.lesserhydra.nemesis.namers;
 
 import java.util.Arrays;
 import java.util.List;
@@ -104,25 +104,31 @@ enum RatingType {
 		@Override
 		public double rate(LivingEntity monster) {
 			ItemStack weapon = monster.getEquipment().getItemInMainHand();
-			return MonsterRater.rateBow(monster, weapon);
+			return MonsterRater.rateBow(weapon);
 		}
 	},
 	
-	TANK ("Unstoppable", "Horror", "Brute", "Tanker") {/*,
+	TANK ("Unstoppable", "Horror", "Brute", "Tanker", "Armored", "Sturdy", "Shelled", "Enclosed") {/*,
 			"", "", "", "", "", "", "", "", "", "") {*/
 		@Override
 		public double rate(LivingEntity monster) {
-			// TODO Analyze armor
-			return 0;
+			return monster.getAttribute(Attribute.GENERIC_ARMOR).getValue() / 20.0; //TODO: Need to actually check armor - not included
 		}
 	},
 	
-	NEMESIS ("Nemesis", "Overpowered", "Adversary", "Cursed", "Scourge", "Tormenter", "Persecutor", "Antagonizer", "Oppressor", "Tyrant",
+	NEMESIS ("Nemesis", "Overpowered", "Adversary", "Cursed", "Scourge", "Tormentor", "Persecutor", "Antagonizer", "Oppressor", "Tyrant",
 			"Legendary", "Eternal", "Abominable", "Abhorrent", "Accursed", "Monstrous") {
 		@Override
 		public double rate(LivingEntity monster) {
-			//TODO: Combination of health, speed, strength, weapon, and armor
-			return 0;
+			//Combination of health, speed, strength, weapon, and armor
+			double health = HEALTHY.rate(monster);
+			double speed = SPEEDY.rate(monster);
+			double strength = STRONG.rate(monster);
+			double weapon = Math.max(SWORDSMAN.rate(monster), ARCHER.rate(monster));
+			double armor = TANK.rate(monster);
+			double result = (health + speed + strength + weapon + armor)/5;
+			if (result > 0.85) result *= 2;
+			return result;
 		}
 	};
 	
@@ -130,7 +136,7 @@ enum RatingType {
 	
 	private final List<String> possibleTitles;
 	
-	private RatingType(String... possibleTitles) {
+	RatingType(String... possibleTitles) {
 		this.possibleTitles = Arrays.asList(possibleTitles);
 	}
 	

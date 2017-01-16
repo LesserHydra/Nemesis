@@ -3,7 +3,6 @@ plugins {
 }
 
 apply plugin: 'java'
-apply plugin: 'eclipse'
 
 import org.ajoberstar.grgit.*
 import org.apache.tools.ant.filters.ReplaceTokens
@@ -20,34 +19,27 @@ repositories {
 }
 
 dependencies {
-  //Bukkit api
-  compile 'org.bukkit:bukkit:1.9-R0.1-SNAPSHOT'
+  compile 'org.jetbrains:annotations:15.0'
+  compile 'org.bukkit:bukkit:1.11-R0.1-SNAPSHOT'
 
   testCompile 'junit:junit:4.12'
   testCompile 'org.assertj:assertj-core:3.4.+'
 }
 
-task generatePluginYaml(type: Copy) {
+//Generate plugin.yml
+processResources {
+  inputs.file 'build.gradle' //So it's regenerated if version changes
   from 'templates/plugin.yml'
-  into 'src/main/resources/'
   filter(ReplaceTokens, tokens: [
-		version:		version,
-    mainClass:  pluginMain,
+          version:		version,
+          mainClass:  pluginMain,
   ])
 }
 
-task removePluginYaml(type: Delete) {
-	delete 'src/main/resources/plugin.yml'
-}
-
-generatePluginYaml.dependsOn('removePluginYaml')
-processResources.dependsOn('generatePluginYaml')
-clean.dependsOn('removePluginYaml')
-
-String generateVersion(workingVersion) {
-  Grgit repo = Grgit.open(project.file('.'))
+static String generateVersion(workingVersion) {
+  Grgit repo = Grgit.open()
   Tag currentTag = repo.tag.list().find {it.commit == repo.head()}
 
-  if (currentTag == null) return workingVersion + '-' + repo.head().abbreviatedId
+  if (currentTag == null) return workingVersion + '-SNAPSHOT'
   return currentTag.getName()
 }

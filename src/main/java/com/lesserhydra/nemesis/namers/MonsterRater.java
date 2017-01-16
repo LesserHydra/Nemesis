@@ -1,4 +1,4 @@
-package com.lesserhydra.nemesis;
+package com.lesserhydra.nemesis.namers;
 
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -35,7 +35,7 @@ class MonsterRater {
 		return swordDamage/maxAttack;
 	}
 	
-	public static double rateBow(LivingEntity monster, ItemStack bow) {
+	public static double rateBow(ItemStack bow) {
 		if (bow == null || bow.getType() != Material.BOW) return 0;
 		return ItemUtils.calculatePowerModifier(bow.getEnchantmentLevel(Enchantment.ARROW_DAMAGE));
 	}
