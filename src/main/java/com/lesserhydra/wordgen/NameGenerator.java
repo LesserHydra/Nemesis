@@ -18,6 +18,10 @@ public class NameGenerator {
 		return new GrammarBuilder();
 	}
 	
+	public static NameGenerator build(String ruleString) {
+		return builder().rule("S", ruleString).build();
+	}
+	
 	private final Rule root;
 	
 }
