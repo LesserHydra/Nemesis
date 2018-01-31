@@ -1,5 +1,7 @@
 package com.lesserhydra.wordgen;
 
+import java.util.Set;
+
 /**
  * Represents a symbol in a NameGenerator grammar.
  */
@@ -14,9 +16,9 @@ interface Symbol {
 	/**
 	 * Attempts to match the beginning of the given string as a possible result of evaluate().
 	 * @param string String to match
-	 * @return -1 if no match, or int i >= 0 where i is the number of characters matched
+	 * @return A collection of potential matches, int i >= 0 where i is the number of characters matched
 	 */
-	int match(String string);
+	Set<Integer> match(String string);
 	
 	/**
 	 * Returns the number of possible values represented by this symbol.

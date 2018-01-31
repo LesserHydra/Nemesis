@@ -1,6 +1,8 @@
 package com.lesserhydra.wordgen;
 
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 public class OptionalSymbol implements Symbol {
 
@@ -17,9 +19,10 @@ public class OptionalSymbol implements Symbol {
 	}
 	
 	@Override
-	public int match(String string) {
-		int symbolMatch = symbol.match(string);
-		return symbolMatch < 0 ? 0 : symbolMatch;
+	public Set<Integer> match(String string) {
+		Set<Integer> result = new HashSet<>(symbol.match(string));
+		result.add(0);
+		return result;
 	}
 	
 	@Override

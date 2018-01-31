@@ -1,5 +1,7 @@
 package com.lesserhydra.wordgen;
 
+import java.util.Collections;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -23,9 +25,9 @@ public class RangedSymbol implements Symbol {
 	}
 	
 	@Override
-	public int match(String string) {
-		//TODO: See RepeatedSymbol
-		return -1;
+	public Set<Integer> match(String string) {
+		//TODO: See ListSymbol
+		return Collections.emptySet();
 	}
 	
 	@Override

@@ -1,6 +1,12 @@
 package com.lesserhydra.wordgen;
 
+import com.lesserhydra.util.CollectionUtils;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -8,14 +14,20 @@ import java.util.stream.Collectors;
  */
 public class ListSymbol implements Symbol {
 	
-	private final List<Symbol> symbols;
+	private final ArrayList<Symbol> symbols;
 	private final double represented;
 	
 	ListSymbol(List<Symbol> symbols) {
-		this.symbols = symbols;
+		this.symbols = new ArrayList<>(symbols);
 		this.represented = symbols.stream()
 				.mapToDouble(Symbol::numRepresented)
 				.reduce(1, (l1, l2) -> l1*l2);
+	}
+	
+	public ListSymbol(Symbol symbol, int n) {
+		//TODO: exceptions
+		this.symbols = CollectionUtils.generateCollection(n, () -> symbol, ArrayList::new);
+		this.represented = Math.pow(symbol.numRepresented(), n);
 	}
 	
 	@Override
@@ -26,19 +38,26 @@ public class ListSymbol implements Symbol {
 	}
 	
 	@Override
-	public int match(String string) {
-		int stringIndex = 0;
-		for (Symbol symbol: symbols) {
-			int matchIndex = symbol.match(string.substring(stringIndex));
-			if (matchIndex < 0) return -1;
-			stringIndex += matchIndex;
-		}
-		return stringIndex;
+	public Set<Integer> match(String string) {
+		return match_impl(string, 0);
 	}
 	
 	@Override
 	public double numRepresented() {
 		return represented;
+	}
+	
+	private Set<Integer> match_impl(String string, int symbolIndex) {
+		//All symbols are finished, result
+		if (symbolIndex == symbols.size()) return Collections.singleton(0);
+		
+		//Run current symbols
+		Set<Integer> results = new HashSet<>();
+		for (int i : symbols.get(symbolIndex).match(string)) {
+			match_impl(string.substring(i), symbolIndex + 1)
+					.forEach(n -> results.add(n + i));
+		}
+		return results;
 	}
 	
 }

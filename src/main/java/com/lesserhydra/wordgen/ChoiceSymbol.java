@@ -3,6 +3,8 @@ package com.lesserhydra.wordgen;
 import com.lesserhydra.util.RandomBag;
 
 import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Represents a collection of symbols where one is chosen at random during evaluation.
@@ -25,11 +27,10 @@ class ChoiceSymbol implements Symbol {
 	}
 	
 	@Override
-	public int match(String string) {
+	public Set<Integer> match(String string) {
 		return possibilities.stream()
-				.mapToInt(symbol -> symbol.match(string))
-				.max()
-				.orElse(-1);
+				.flatMap(symbol -> symbol.match(string).stream())
+				.collect(Collectors.toSet());
 	}
 	
 	@Override

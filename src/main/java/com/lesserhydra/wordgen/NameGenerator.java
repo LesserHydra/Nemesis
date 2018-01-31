@@ -16,8 +16,9 @@ public class NameGenerator {
 		return root.numRepresented();
 	}
 	
-	public boolean isPossible(String s) {
-		return root.match(s) == s.length();
+	public boolean match(String s) {
+		return root.match(s).stream()
+				.anyMatch(i -> i == s.length());
 	}
 	
 	public static GrammarBuilder builder() {
