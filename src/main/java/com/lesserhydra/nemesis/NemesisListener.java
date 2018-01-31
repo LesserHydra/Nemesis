@@ -34,7 +34,7 @@ public class NemesisListener implements Listener {
 		if (!MonsterNamers.hasNamer(monster.getType())) return;
 		
 		//Heal nemesis
-		monster.setHealth(monster.getMaxHealth());
+		monster.setHealth(monster.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
 		if (monster instanceof PigZombie) ((PigZombie) monster).setAnger(32767);
 		
 		//If already named, stop
