@@ -16,16 +16,24 @@ public class MonsterNamers {
 	
 	private static final Map<EntityType, MonsterNamer> namerMap =
 			MapBuilder.init(() -> new EnumMap<EntityType, MonsterNamer>(EntityType.class))
+			//Zombies
 			.put(EntityType.ZOMBIE, new ZombieNamer())
 			.put(EntityType.ZOMBIE_VILLAGER, new ZombieNamer())
+			.put(EntityType.PIG_ZOMBIE, new ZombieNamer())
+			.put(EntityType.HUSK, new ZombieNamer())
+			//Skeletons
 			.put(EntityType.SKELETON, new SkeletonNamer())
+			.put(EntityType.STRAY, new SkeletonNamer())
 			.put(EntityType.WITHER_SKELETON, new SkeletonNamer())
+			//Spiders
 			.put(EntityType.SPIDER, new SpiderNamer())
 			.put(EntityType.CAVE_SPIDER, new SpiderNamer())
-			.put(EntityType.WITCH, new WitchNamer())
+			//Illagers
 			.put(EntityType.VINDICATOR, new VindicatorNamer())
 			.put(EntityType.EVOKER, new VindicatorNamer())
-			.put(EntityType.VEX, e -> StringUtils.capitalize(vexNamer.next()) + "the Vex")
+			.put(EntityType.VEX, e -> StringUtils.capitalize(vexNamer.next()) + " the Vex")
+			//Other
+			.put(EntityType.WITCH, new WitchNamer())
 			.buildImmutable();
 	
 	public static boolean hasNamer(EntityType type) {

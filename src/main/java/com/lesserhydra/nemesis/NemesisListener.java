@@ -7,6 +7,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.attribute.AttributeModifier.Operation;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -30,10 +31,11 @@ public class NemesisListener implements Listener {
 		if (monster == null) return;
 		
 		//Make sure we have a generator for this entity type
-		if (MonsterNamers.hasNamer(monster.getType())) return;
+		if (!MonsterNamers.hasNamer(monster.getType())) return;
 		
 		//Heal nemesis
-		monster.setHealth(monster.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+		monster.setHealth(monster.getMaxHealth());
+		if (monster instanceof PigZombie) ((PigZombie) monster).setAnger(32767);
 		
 		//If already named, stop
 		if (monster.getCustomName() != null) return;
