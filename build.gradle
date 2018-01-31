@@ -41,5 +41,5 @@ static String generateVersion(workingVersion) {
   Tag currentTag = repo.tag.list().find {it.commit == repo.head()}
 
   if (currentTag == null) return workingVersion + '-SNAPSHOT'
-  return currentTag.getName()
+  return currentTag.getName().substring(1)
 }
