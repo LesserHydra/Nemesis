@@ -47,7 +47,7 @@ public class GrammarBuilder {
 	
 	private String rootRule;
 	private final Deque<Pair<String, String>> ruleStrings = new LinkedList<>();
-	private final Map<String, Rule> ruleMap = new HashMap<>();
+	private final Map<String, Symbol> ruleMap = new HashMap<>();
 	
 	private void parseRuleLine(Pair<String, String> pair) {
 		String symbolString = pair.getLeft();
@@ -57,16 +57,16 @@ public class GrammarBuilder {
 	}
 
 	
-	private Rule buildRule(String ruleString) {
-		Collection<List<Symbol>> choices = new LinkedList<>();
-		parseString(ruleString, '|', s -> choices.add(buildSymbols(s)));
-		return new Rule(choices);
+	private ChoiceSymbol buildRule(String ruleString) {
+		Collection<Symbol> choices = new LinkedList<>();
+		parseString(ruleString, '|', s -> choices.add(buildListSymbol(s)));
+		return new ChoiceSymbol(choices);
 	}
 	
-	private List<Symbol> buildSymbols(String string) {
-		List<Symbol> result = new LinkedList<>();
-		parseString(string, ' ', str -> result.add(mapSymbol(str)));
-		return result;
+	private ListSymbol buildListSymbol(String string) {
+		List<Symbol> resultSymbols = new LinkedList<>();
+		parseString(string, ' ', str -> resultSymbols.add(mapSymbol(str)));
+		return new ListSymbol(resultSymbols);
 	}
 	
 	private Symbol mapSymbol(String symbolString) {
@@ -89,14 +89,14 @@ public class GrammarBuilder {
 			
 			//Open group
 			else if (c == '(') {
-				if ((openBraces == 0 && builder.length() > 0) || workingSymbol != null) throw makeParseError("Unescaped open parentheses inside of symbol", symbolString, i);
+				if ((openBraces == 0 && builder.length() > 0) || workingSymbol != null) throw new GrammarParseException(makeError("Unescaped open parentheses inside of symbol", symbolString, i));
 				++openBraces;
 				if (openBraces == 1) continue;
 			}
 			
 			//Close group
 			else if (c == ')') {
-				if (openBraces == 0) throw makeParseError("Unmatched close parentheses", symbolString, i);
+				if (openBraces == 0) throw new GrammarParseException(makeError("Unmatched close parentheses", symbolString, i));
 				--openBraces;
 				if (openBraces == 0) {
 					workingSymbol = buildRule(builder.toString());
@@ -127,18 +127,18 @@ public class GrammarBuilder {
 						builder = new StringBuilder();
 					}
 					int end = symbolString.indexOf(']', i+1);
-					if (end == -1) throw makeParseError("Unclosed open square bracket", symbolString, i);
+					if (end == -1) throw new GrammarParseException(makeError("Unclosed open square bracket", symbolString, i));
 					String probString = symbolString.substring(i+1, end);
-					if (!StringUtil.isFloat(probString)) throw makeParseError("Invalid probability string, expected float", symbolString, i+1);
+					if (!StringUtil.isFloat(probString)) throw new GrammarParseException(makeError("Invalid probability string, expected float", symbolString, i+1));
 					double prob = Double.parseDouble(probString);
-					if (prob < 0 || prob > 1) throw makeParseError("Invalid probability [0, 1]", symbolString, i+1);
+					if (prob < 0 || prob > 1) throw new GrammarParseException(makeError("Invalid probability [0, 1]", symbolString, i+1));
 					workingSymbol = new POptionalSymbol(workingSymbol, prob);
 					i = end;
 					continue;
 				}
 			}
 			
-			if (workingSymbol != null) throw makeParseError("Non-special character after symbol finish", symbolString, i);
+			if (workingSymbol != null) throw new GrammarParseException(makeError("Non-special character after symbol finish", symbolString, i));
 			builder.append(c);
 		}
 		
@@ -147,8 +147,7 @@ public class GrammarBuilder {
 	}
 	
 	private Symbol getSymbol(String symbolString) {
-		Rule rule = ruleMap.get(symbolString);
-		return rule != null ? rule : new TerminalSymbol(symbolString);
+		return ruleMap.getOrDefault(symbolString, new TerminalSymbol(symbolString));
 	}
 	
 	private static void parseString(String string, char seperator, Consumer<String> consumer) {
@@ -169,22 +168,21 @@ public class GrammarBuilder {
 			else if (c == '\\') escape = true;
 			else if (c == '(') ++openBraces;
 			else if (c == ')') {
-				if (openBraces == 0) throw makeParseError("Unmatched close parentheses", string, i);
+				if (openBraces == 0) throw new GrammarParseException(makeError("Unmatched close parentheses", string, i));
 				--openBraces;
 			}
 			
 			builder.append(c);
 		}
 		
-		if (openBraces != 0) throw makeParseError("Unmatched open parentheses", string, string.length());
+		if (openBraces != 0) throw new GrammarParseException(makeError("Unmatched open parentheses", string, string.length()));
 		consumer.accept(builder.toString());
 	}
 	
-	private static GrammarParseException makeParseError(String message, String line, int index) {
-		String errorMessage = message + '\n'
+	private static String makeError(String message, String line, int index) {
+		return message + '\n'
 				+ line + '\n'
 				+ StringUtils.repeat(" ", index) + "^";
-		return new GrammarParseException(errorMessage);
 	}
 	
 }

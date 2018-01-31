@@ -2,7 +2,9 @@ package com.lesserhydra.wordgen;
 
 public class NameGenerator {
 	
-	NameGenerator(Rule root) {
+	private final Symbol root;
+	
+	NameGenerator(Symbol root) {
 		this.root = root;
 	}
 	
@@ -14,6 +16,11 @@ public class NameGenerator {
 		return root.numRepresented();
 	}
 	
+	public boolean match(String s) {
+		return root.match(s).stream()
+				.anyMatch(i -> i == s.length());
+	}
+	
 	public static GrammarBuilder builder() {
 		return new GrammarBuilder();
 	}
@@ -21,7 +28,5 @@ public class NameGenerator {
 	public static NameGenerator build(String ruleString) {
 		return builder().rule("S", ruleString).build();
 	}
-	
-	private final Rule root;
 	
 }
