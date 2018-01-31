@@ -57,18 +57,21 @@ public class GrammarBuilder {
 	}
 
 	
+	//Parse choices; handles OR'd possibilities
 	private ChoiceSymbol buildRule(String ruleString) {
 		Collection<Symbol> choices = new LinkedList<>();
 		parseString(ruleString, '|', s -> choices.add(buildListSymbol(s)));
 		return new ChoiceSymbol(choices);
 	}
 	
+	//Parse single choice; links symbols in a list
 	private ListSymbol buildListSymbol(String string) {
 		List<Symbol> resultSymbols = new LinkedList<>();
 		parseString(string, ' ', str -> resultSymbols.add(mapSymbol(str)));
 		return new ListSymbol(resultSymbols);
 	}
 	
+	//Parse single symbol
 	private Symbol mapSymbol(String symbolString) {
 		symbolString = symbolString.trim();
 		
@@ -111,8 +114,8 @@ public class GrammarBuilder {
 				if (openBraces == 0) continue;
 			}
 			
-			//Optional
 			else if (openBraces == 0) {
+				//Optional
 				if (c == '?') {
 					if (workingSymbol == null) {
 						workingSymbol = getSymbol(builder.toString());
@@ -121,6 +124,7 @@ public class GrammarBuilder {
 					workingSymbol = new OptionalSymbol(workingSymbol);
 					continue;
 				}
+				//Probability
 				else if (c == '[') {
 					if (workingSymbol == null) {
 						workingSymbol = getSymbol(builder.toString());
@@ -133,6 +137,35 @@ public class GrammarBuilder {
 					double prob = Double.parseDouble(probString);
 					if (prob < 0 || prob > 1) throw new GrammarParseException(makeError("Invalid probability [0, 1]", symbolString, i+1));
 					workingSymbol = new POptionalSymbol(workingSymbol, prob);
+					i = end;
+					continue;
+				}
+				//Ranges
+				else if (c == '{') {
+					if (workingSymbol == null) {
+						workingSymbol = getSymbol(builder.toString());
+						builder = new StringBuilder();
+					}
+					int end = symbolString.indexOf('}', i+1);
+					if (end == -1) throw new GrammarParseException(makeError("Unclosed open bracket", symbolString, i));
+					//Get arg string
+					String rangeString = symbolString.substring(i+1, end);
+					//Get two args, second optional
+					String[] rangeArgs = rangeString.split(",");
+					if (rangeArgs.length > 2) throw new GrammarParseException(makeError("Too many range arguments", symbolString, i+1));
+					String minRangeStr = rangeArgs[0];
+					String maxRangeStr = rangeArgs.length == 2 ? rangeArgs[1] : rangeArgs[0];
+					//Expect args to be positive integers
+					if (!StringUtil.isInteger(minRangeStr)) throw new GrammarParseException(makeError("Invalid range minimum, expected positive int", symbolString, i+1));
+					if (!StringUtil.isInteger(maxRangeStr)) throw new GrammarParseException(makeError("Invalid range maximum, expected positive int", symbolString, i+1));
+					//Parse ints
+                  	int minRange = Integer.parseInt(minRangeStr);
+					int maxRange = Integer.parseInt(maxRangeStr);
+					if (minRange < 0) throw new GrammarParseException(makeError("Invalid range minimum, expected positive int", symbolString, i+1));
+					if (maxRange < minRange) throw new GrammarParseException(makeError("Invalid range maximum, must be greater or equal to minimum", symbolString, i+1));
+					//Build symbol
+					workingSymbol = new RangedSymbol(workingSymbol, minRange, maxRange);
+					//Update index
 					i = end;
 					continue;
 				}
