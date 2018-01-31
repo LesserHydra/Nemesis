@@ -1,4 +1,4 @@
-package com.lesserhydra.wordgen;
+package com.lesserhydra.nemesis.wordgen;
 
 import org.junit.Test;
 

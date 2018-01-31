@@ -8,7 +8,7 @@ import org.bukkit.attribute.AttributeModifier.Operation;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
-import com.lesserhydra.bukkitutil.ItemUtils;
+import com.lesserhydra.nemesis.bukkitutil.ItemUtils;
 
 class MonsterRater {
 

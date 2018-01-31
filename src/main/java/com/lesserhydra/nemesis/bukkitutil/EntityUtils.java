@@ -1,4 +1,4 @@
-package com.lesserhydra.bukkitutil;
+package com.lesserhydra.nemesis.bukkitutil;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;

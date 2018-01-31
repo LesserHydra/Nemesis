@@ -1,11 +1,11 @@
-package com.lesserhydra.wordgen;
+package com.lesserhydra.nemesis.wordgen;
 
 import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-import com.lesserhydra.util.RandomBag;
+import com.lesserhydra.nemesis.util.RandomBag;
 
 public class RangedSymbol implements Symbol {
 	

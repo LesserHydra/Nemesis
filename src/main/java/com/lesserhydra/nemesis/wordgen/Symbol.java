@@ -1,4 +1,4 @@
-package com.lesserhydra.wordgen;
+package com.lesserhydra.nemesis.wordgen;
 
 import java.util.Set;
 

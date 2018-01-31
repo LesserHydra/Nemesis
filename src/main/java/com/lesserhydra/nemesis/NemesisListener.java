@@ -1,6 +1,6 @@
 package com.lesserhydra.nemesis;
 
-import com.lesserhydra.bukkitutil.EntityUtils;
+import com.lesserhydra.nemesis.bukkitutil.EntityUtils;
 import com.lesserhydra.nemesis.namers.MonsterNamers;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;

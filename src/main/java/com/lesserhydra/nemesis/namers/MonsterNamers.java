@@ -1,7 +1,7 @@
 package com.lesserhydra.nemesis.namers;
 
-import com.lesserhydra.util.MapBuilder;
-import com.lesserhydra.wordgen.NameGenerator;
+import com.lesserhydra.nemesis.util.MapBuilder;
+import com.lesserhydra.nemesis.wordgen.NameGenerator;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;

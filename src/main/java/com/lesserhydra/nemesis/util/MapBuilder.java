@@ -1,4 +1,4 @@
-package com.lesserhydra.util;
+package com.lesserhydra.nemesis.util;
 
 import java.util.Collections;
 import java.util.Map;

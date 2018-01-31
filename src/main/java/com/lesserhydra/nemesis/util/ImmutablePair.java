@@ -1,4 +1,4 @@
-package com.lesserhydra.util;
+package com.lesserhydra.nemesis.util;
 
 
 public class ImmutablePair<L, R> implements Pair<L, R> {

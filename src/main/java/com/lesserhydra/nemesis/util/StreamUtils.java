@@ -1,4 +1,4 @@
-package com.lesserhydra.util;
+package com.lesserhydra.nemesis.util;
 
 import java.util.Spliterator;
 import java.util.function.BooleanSupplier;

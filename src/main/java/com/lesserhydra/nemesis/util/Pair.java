@@ -1,4 +1,4 @@
-package com.lesserhydra.util;
+package com.lesserhydra.nemesis.util;
 
 /**
  * Represents a pair of elements.

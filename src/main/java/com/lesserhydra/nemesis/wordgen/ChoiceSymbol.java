@@ -1,6 +1,6 @@
-package com.lesserhydra.wordgen;
+package com.lesserhydra.nemesis.wordgen;
 
-import com.lesserhydra.util.RandomBag;
+import com.lesserhydra.nemesis.util.RandomBag;
 
 import java.util.Collection;
 import java.util.Set;

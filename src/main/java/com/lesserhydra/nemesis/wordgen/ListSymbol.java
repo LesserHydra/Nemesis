@@ -1,6 +1,6 @@
-package com.lesserhydra.wordgen;
+package com.lesserhydra.nemesis.wordgen;
 
-import com.lesserhydra.util.CollectionUtils;
+import com.lesserhydra.nemesis.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -1,8 +1,8 @@
-package com.lesserhydra.wordgen;
+package com.lesserhydra.nemesis.wordgen;
 
-import com.lesserhydra.util.ImmutablePair;
-import com.lesserhydra.util.Pair;
-import com.lesserhydra.util.StringUtil;
+import com.lesserhydra.nemesis.util.ImmutablePair;
+import com.lesserhydra.nemesis.util.Pair;
+import com.lesserhydra.nemesis.util.StringUtil;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.Collection;
